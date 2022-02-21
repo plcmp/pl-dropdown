@@ -1,0 +1,29 @@
+{
+    "name": "@plcmp/pl-dropdown",
+    "version": "0.0.1",
+    "description": "Simple dropdown component.",
+    "main": "pl-dropdown.js",
+    "repository": {
+        "url": "https://github.com/plcmp/pl-dropdown.git"
+    },
+    "license": "MIT",
+    "type": "module",
+    "author": {
+        "name": "Dmitry Boikov",
+        "email": "boikovdv@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Azat Yamalov",
+            "email": "boikovdv@live.com"
+        },
+        {
+            "name": "Andrey Maksimov",
+            "email": "andrmaxmail@gmail.com"
+        }
+    ],
+    "dependencies": {
+        "polylib": "^1.0.0",
+        "@plcmp/utils": "^0.0.1"
+    }
+}

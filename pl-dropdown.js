@@ -1,0 +1,142 @@
+import { html, PlElement, css } from "polylib";
+import { addOverlay, removeOverlay } from "@plcmp/utils";
+
+function calcPosRect(direction, around, target) {
+    let a = { x: null, y: null, height: target.height, width: target.width };
+    switch (direction) {
+        case 'left':
+            a.y = around.top;
+            a.x = around.left - target.width;
+            break;
+        case 'right':
+            a.y = around.top;
+            a.x = around.right;
+            break;
+        case 'right-up':
+            a.y = around.bottom - target.height;
+            a.x = around.right;
+            break;
+        case 'left-up':
+            a.y = around.bottom - target.height;
+            a.x = around.left - target.width;
+            break;
+        case 'up':
+            a.y = around.top - target.height;
+            a.x = around.left;
+            break;
+        case 'up-left':
+            a.y = around.top - target.height;
+            a.x = around.right - target.width;
+            break;
+        case 'down-left':
+            a.y = around.bottom;
+            a.x = around.right - target.width;
+            break;
+        case 'down':
+        default:
+            a.y = around.bottom;
+            a.x = around.left;
+    }
+    return DOMRect.fromRect(a);
+}
+function calcIntersect(a, b) {
+    let width = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    let height = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    if (height <= 0 || width <= 0) return 0
+    else return (height * width) / (a.height * a.width);
+}
+const order = ['down', 'down-left', 'up', 'up-left', 'right', 'right-up', 'left', 'left-up'];
+
+class PlDropdown extends PlElement {
+    static get properties() {
+        return {
+            opened: { type: Boolean, value: false, reflectToAttribute: true },
+            fitInto: { value: null },
+            direction: { value: 'down' } // down, up, left, right
+        }
+    };
+
+    static get css() {
+        return css`
+            :host {
+                display: none;
+                position: fixed;
+                padding: var(--dropdown-padding, 8px);
+                border: 1px solid lightgray;
+                box-shadow: 3px 3px 5px lightgray;
+                background: white;
+            }
+            :host([opened]) {
+                display: block;
+            }
+        `;
+    }
+
+    static get template() {
+        return html`
+            <slot></slot>
+        `;
+    }
+
+    constructor() {
+        super();
+        this._callback = () => {
+            this.reFit(this.target, this.fitInto);
+        };
+        this._close = e => {
+            let path = e.composedPath();
+            if (!path.includes(this)) {
+                e.preventDefault();
+                this.close();
+            }
+        }
+    }
+    open(target, fitInto) {
+        if (this.opened) return;
+        this.opened = true;
+        this.target = target;
+        this.reFit(target, fitInto);
+        addOverlay(this);
+
+        addEventListener('resize', this._callback, { passive: true });
+        addEventListener('scroll', this._callback, { passive: true });
+        addEventListener('click', this._close, { capture: true })
+    }
+    close() {
+        if (!this.opened) return;
+        this.opened = false;
+        removeOverlay(this);
+        removeEventListener('resize', this._callback, { passive: true });
+        removeEventListener('scroll', this._callback, { passive: true });
+        removeEventListener('click', this._close, { capture: true });
+    }
+    reFit(fitAround, fitInto) {
+        if (!fitAround) return;
+        let fitRect = fitInto?.getBoundingClientRect?.() ?? DOMRect.fromRect({ x: 0, y: 0, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight });
+        let s = this.getBoundingClientRect();
+        let sl = this.style;
+        let t = fitAround.getBoundingClientRect();
+        // пробуем для указанного направления
+        let a = calcPosRect(this.direction, t, s);
+        let iRate = calcIntersect(a, fitRect);
+        if (iRate < 1) {
+            // если не уместилось перебираем направления пока не влезет, либо оставляем наилучшее
+            let bestDir = this.direction;
+            for (let d in order) {
+                let q = calcPosRect(order[d], t, s);
+                let iRate2 = calcIntersect(q, fitRect);
+                if (iRate2 > iRate) {
+                    bestDir = order[d];
+                    a = q;
+                    iRate = iRate2;
+                }
+                if (iRate2 === 1) break;
+            }
+        }
+        sl.left = r(a.x);
+        sl.top = r(a.y);
+    }
+}
+function r(x) { return Math.round(x) + 'px'; }
+
+customElements.define('pl-dropdown', PlDropdown);
