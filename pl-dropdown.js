@@ -100,7 +100,8 @@ class PlDropdown extends PlElement {
 
         addEventListener('resize', this._callback, { passive: true });
         addEventListener('scroll', this._callback, { passive: true });
-        addEventListener('click', this._close, { capture: true })
+        addEventListener('click', this._close, { capture: true });
+        this.dispatchEvent(new CustomEvent('pl-dropdown-show', { bubbles: true, composed: true }));
     }
     close() {
         if (!this.opened) return;
@@ -109,6 +110,7 @@ class PlDropdown extends PlElement {
         removeEventListener('resize', this._callback, { passive: true });
         removeEventListener('scroll', this._callback, { passive: true });
         removeEventListener('click', this._close, { capture: true });
+        this.dispatchEvent(new CustomEvent('pl-dropdown-hide', { bubbles: true, composed: true }));
     }
     reFit(fitAround, fitInto) {
         if (!fitAround) return;
