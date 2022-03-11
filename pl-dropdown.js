@@ -114,6 +114,7 @@ class PlDropdown extends PlElement {
         if (!fitAround) return;
         let fitRect = fitInto?.getBoundingClientRect?.() ?? DOMRect.fromRect({ x: 0, y: 0, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight });
         let s = this.getBoundingClientRect();
+        let dx = s.left - this.offsetLeft, dy = s.top - this.offsetTop;
         let sl = this.style;
         let t = fitAround.getBoundingClientRect();
         // пробуем для указанного направления
@@ -133,8 +134,8 @@ class PlDropdown extends PlElement {
                 if (iRate2 === 1) break;
             }
         }
-        sl.left = r(a.x);
-        sl.top = r(a.y);
+        sl.left = r(a.x - dx);
+        sl.top = r(a.y - dy);
     }
 }
 function r(x) { return Math.round(x) + 'px'; }
