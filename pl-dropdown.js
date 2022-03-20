@@ -61,11 +61,10 @@ class PlDropdown extends PlElement {
             :host {
                 display: none;
                 position: fixed;
-                padding: var(--dropdown-padding, 8px);
-                border: 1px solid lightgray;
-                box-shadow: 3px 3px 5px lightgray;
-                background: white;
+                background: var(--surface-color);
+                box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
             }
+            
             :host([opened]) {
                 display: block;
             }
