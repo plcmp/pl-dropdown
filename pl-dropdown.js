@@ -62,6 +62,7 @@ class PlDropdown extends PlElement {
                 display: none;
                 position: fixed;
                 background: var(--surface-color);
+                padding: var(--space-md);
                 box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
             }
             
