@@ -92,7 +92,7 @@ class PlDropdown extends PlElement {
         }
     }
     open(target, fitInto, opts) {
-        if (opts.model) this.model = opts.model;
+        if (opts?.model) this.model = opts.model;
         if (this.opened) return;
         this.opened = true;
         this.target = target;
