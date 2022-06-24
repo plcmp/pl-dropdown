@@ -102,7 +102,8 @@ class PlDropdown extends PlElement {
 
         addEventListener('resize', this._callback, { passive: true });
         addEventListener('scroll', this._callback, { passive: true });
-        addEventListener('click', this._close, { capture: true });
+        // delay attach event listener to let all current events dispatch fully
+        setTimeout( ()=>addEventListener('click', this._close), 0);
         this.dispatchEvent(new CustomEvent('pl-dropdown-show', { bubbles: true, composed: true }));
     }
     close() {
@@ -111,7 +112,7 @@ class PlDropdown extends PlElement {
         removeOverlay(this);
         removeEventListener('resize', this._callback, { passive: true });
         removeEventListener('scroll', this._callback, { passive: true });
-        removeEventListener('click', this._close, { capture: true });
+        removeEventListener('click', this._close);
         this.dispatchEvent(new CustomEvent('pl-dropdown-hide', { bubbles: true, composed: true }));
     }
     reFit(fitAround, fitInto) {
