@@ -48,35 +48,29 @@ function calcIntersect(a, b) {
 const order = ['down', 'down-left', 'up', 'up-left', 'right', 'right-up', 'left', 'left-up'];
 
 class PlDropdown extends PlElement {
-    static get properties() {
-        return {
-            opened: { type: Boolean, value: false, reflectToAttribute: true },
-            fitInto: { value: null },
-            direction: { value: 'down' } // down, up, left, right
+    static properties = {
+        opened: { type: Boolean, value: false, reflectToAttribute: true },
+        fitInto: { value: null },
+        direction: { value: 'down' } // down, up, left, right
+    }
+
+    static css = css`
+        :host {
+            display: none;
+            position: fixed;
+            background: var(--surface-color);
+            padding: var(--space-md);
+            box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
         }
-    };
+        
+        :host([opened]) {
+            display: block;
+        }
+    `;
 
-    static get css() {
-        return css`
-            :host {
-                display: none;
-                position: fixed;
-                background: var(--surface-color);
-                padding: var(--space-md);
-                box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
-            }
-            
-            :host([opened]) {
-                display: block;
-            }
-        `;
-    }
-
-    static get template() {
-        return html`
-            <slot></slot>
-        `;
-    }
+    static template = html`
+        <slot></slot>
+    `;
 
     constructor() {
         super();
@@ -103,7 +97,7 @@ class PlDropdown extends PlElement {
         addEventListener('resize', this._callback, { passive: true });
         addEventListener('scroll', this._callback, { passive: true });
         // delay attach event listener to let all current events dispatch fully
-        setTimeout( ()=>addEventListener('click', this._close), 0);
+        setTimeout(() => addEventListener('click', this._close), 0);
         this.dispatchEvent(new CustomEvent('pl-dropdown-show', { bubbles: true, composed: true }));
     }
     close() {
