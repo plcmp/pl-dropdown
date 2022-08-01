@@ -85,6 +85,10 @@ class PlDropdown extends PlElement {
                 this.close();
             }
         }
+        this.addEventListener('mousedown', e => {
+            // prevent window click event when mousedown was in dropdown area and click outside
+            addEventListener('click', e => { if (!e.composedPath().includes(this)) e.stopImmediatePropagation() }, { once: true, capture: true });
+        });
     }
     open(target, fitInto, opts) {
         if (opts?.model) this.model = opts.model;
