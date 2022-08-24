@@ -51,7 +51,8 @@ class PlDropdown extends PlElement {
     static properties = {
         opened: { type: Boolean, value: false, reflectToAttribute: true },
         fitInto: { value: null },
-        direction: { value: 'down' } // down, up, left, right
+        direction: { value: 'down' }, // down, up, left, right
+        ignoreOutsideClick: { type: Boolean, value: false }
     }
 
     static css = css`
@@ -78,6 +79,9 @@ class PlDropdown extends PlElement {
             this.reFit(this.target, this.fitInto);
         };
         this._close = e => {
+            if (this.ignoreOutsideClick) {
+                return;
+            }
             let path = e.composedPath();
             if (!path.includes(this)) {
                 e.preventDefault();
