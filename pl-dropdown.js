@@ -58,7 +58,7 @@ class PlDropdown extends PlElement {
     static css = css`
         :host {
             display: none;
-            position: fixed;
+            position: absolute;
             background: var(--surface-color);
             padding: var(--space-md);
             box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
