@@ -101,8 +101,11 @@ class PlDropdown extends PlElement {
         if (this.opened) return;
         this.opened = true;
         this.target = target;
-        this.reFit(target, fitInto);
         addOverlay(this);
+
+        setTimeout(() => {
+            this.reFit(target, fitInto);
+        }, 0)
 
         addEventListener('resize', this._callback, { passive: true });
         addEventListener('scroll', this._callback, { passive: true });
