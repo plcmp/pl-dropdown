@@ -103,6 +103,7 @@ class PlDropdown extends PlElement {
         this.target = target;
         addOverlay(this);
 
+        // нужен для расчета размеров внутренностей дропдауна, вложенных компонентов, которые инициализятся асинхронно (dom-if)
         setTimeout(() => {
             this.reFit(target, fitInto);
         }, 0)
