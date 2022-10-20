@@ -52,7 +52,8 @@ class PlDropdown extends PlElement {
         opened: { type: Boolean, value: false, reflectToAttribute: true },
         fitInto: { value: null },
         direction: { value: 'down' }, // down, up, left, right
-        ignoreOutsideClick: { type: Boolean, value: false }
+        ignoreOutsideClick: { type: Boolean, value: false },
+        allowDirections: {type: Array, value: Array.from(order)}
     }
 
     static css = css`
@@ -101,6 +102,7 @@ class PlDropdown extends PlElement {
         if (this.opened) return;
         this.opened = true;
         this.target = target;
+        this.fitInto = fitInto;
         addOverlay(this);
 
         // нужен для расчета размеров внутренностей дропдауна, вложенных компонентов, которые инициализятся асинхронно (dom-if)
@@ -136,11 +138,11 @@ class PlDropdown extends PlElement {
         if (iRate < 1) {
             // если не уместилось перебираем направления пока не влезет, либо оставляем наилучшее
             let bestDir = this.direction;
-            for (let d in order) {
-                let q = calcPosRect(order[d], t, s);
+            for (let d in this.allowDirections) {
+                let q = calcPosRect(this.allowDirections[d], t, s);
                 let iRate2 = calcIntersect(q, fitRect);
                 if (iRate2 > iRate) {
-                    bestDir = order[d];
+                    bestDir = this.allowDirections[d];
                     a = q;
                     iRate = iRate2;
                 }
