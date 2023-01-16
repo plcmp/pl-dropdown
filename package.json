@@ -1,6 +1,6 @@
 {
     "name": "@plcmp/pl-dropdown",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "description": "Simple dropdown component.",
     "main": "pl-dropdown.js",
     "repository": {
