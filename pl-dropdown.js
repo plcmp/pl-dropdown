@@ -85,7 +85,6 @@ class PlDropdown extends PlElement {
             }
             let path = e.composedPath();
             if (!path.includes(this)) {
-                e.preventDefault();
                 this.close();
             }
         }
