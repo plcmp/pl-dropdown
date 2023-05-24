@@ -66,7 +66,35 @@ class PlDropdown extends PlElement {
         }
         
         :host([opened]) {
+            opacity: 1;
+            visibility:hidden;
             display: block;
+        }
+
+        :host(.fade) {
+            animation-name: fade, slide;
+            animation-duration: 200ms, 400ms;
+            animation-fill-mode: forwards;
+            animation-timing-function: linear, cubic-bezier(0.23, 1, 0.32, 1);
+            animation-delay: 200ms, 0;
+            visibility:visible;
+        }
+
+        @keyframes fade {
+            0% {
+              opacity: 0;
+            }
+            100% {
+              opacity: 1;
+            }
+        }
+        @keyframes slide {
+            0% {
+              margin-top: -10px;
+            }
+            100% {
+              margin-top: 0px;
+            }
         }
     `;
 
@@ -106,6 +134,7 @@ class PlDropdown extends PlElement {
         // нужен для расчета размеров внутренностей дропдауна, вложенных компонентов, которые инициализятся асинхронно (dom-if)
         setTimeout(() => {
             this.reFit(target, fitInto);
+            this.classList.add('fade');
         }, 0)
 
         addEventListener('resize', this._callback, { passive: true });
