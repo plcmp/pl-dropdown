@@ -53,15 +53,15 @@ class PlDropdown extends PlElement {
         fitInto: { value: null },
         direction: { value: 'down' }, // down, up, left, right
         ignoreOutsideClick: { type: Boolean, value: false },
-        allowDirections: {type: Array, value: Array.from(order)}
+        allowDirections: { type: Array, value: Array.from(order) }
     }
 
     static css = css`
         :host {
             display: none;
             position: absolute;
-            background: var(--surface-color);
-            padding: var(--space-md);
+            background: var(--pl-surface-color);
+            padding: var(--pl-base-space);
             box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
         }
         
@@ -78,6 +78,11 @@ class PlDropdown extends PlElement {
             animation-timing-function: linear, cubic-bezier(0.23, 1, 0.32, 1);
             animation-delay: 200ms, 0;
             visibility:visible;
+        }
+
+        :popover-open {
+            inset: unset;
+            border:inherit;
         }
 
         @keyframes fade {
@@ -99,7 +104,9 @@ class PlDropdown extends PlElement {
     `;
 
     static template = html`
-        <slot></slot>
+        <span id="popover" popover="manual" overlay>
+            <slot></slot>
+        </span>
     `;
 
     constructor() {
@@ -130,6 +137,9 @@ class PlDropdown extends PlElement {
         this.target = target;
         this.fitInto = fitInto;
         addOverlay(this);
+        if(supportsPopover()) {
+            this.$.popover.showPopover();
+        }
 
         // нужен для расчета размеров внутренностей дропдауна, вложенных компонентов, которые инициализятся асинхронно (dom-if)
         setTimeout(() => {
@@ -145,6 +155,9 @@ class PlDropdown extends PlElement {
     }
     close() {
         if (!this.opened) return;
+        if(supportsPopover()) {
+            this.$.popover.hidePopover();
+        }
         this.opened = false;
         removeOverlay(this);
         removeEventListener('resize', this._callback, { passive: true });
@@ -155,9 +168,10 @@ class PlDropdown extends PlElement {
     reFit(fitAround, fitInto) {
         if (!fitAround) return;
         let fitRect = fitInto?.getBoundingClientRect?.() ?? DOMRect.fromRect({ x: 0, y: 0, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight });
-        let s = this.getBoundingClientRect();
-        let dx = s.left - this.offsetLeft, dy = s.top - this.offsetTop;
-        let sl = this.style;
+        let s = supportsPopover() ? this.$.popover.getBoundingClientRect() : this.getBoundingClientRect();
+        let dx = supportsPopover() ? s.left -this.$.popover.offsetLeft : s.left - this.offsetLeft, 
+            dy = supportsPopover() ? s.top - this.$.popover.offsetTop  : s.top - this.offsetTop;
+        let sl = supportsPopover() ? this.$.popover.style : this.style;
         let t = fitAround.getBoundingClientRect();
         // пробуем для указанного направления
         let a = calcPosRect(this.direction, t, s);
@@ -180,6 +194,12 @@ class PlDropdown extends PlElement {
         sl.top = r(a.y - dy);
     }
 }
+
 function r(x) { return Math.round(x) + 'px'; }
+
+function supportsPopover() {
+    return HTMLElement.prototype.hasOwnProperty("popover");
+  }
+  
 
 customElements.define('pl-dropdown', PlDropdown);
