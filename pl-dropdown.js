@@ -104,7 +104,7 @@ class PlDropdown extends PlElement {
     `;
 
     static template = html`
-        <span id="popover" popover="manual" overlay>
+        <span part="popover" id="popover" popover="manual" overlay>
             <slot></slot>
         </span>
     `;
