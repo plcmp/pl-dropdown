@@ -61,8 +61,10 @@ class PlDropdown extends PlElement {
             display: none;
             position: absolute;
             background: var(--pl-surface-color);
-            padding: var(--pl-base-space);
-            box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
+            padding: var(--pl-space-sm);
+            box-shadow: 0px 4px 16px 0px rgba(34, 60, 80, 0.2);
+            border-radius: var(--pl-border-radius);
+            border: 1px solid var(--pl-grey-light);
         }
         
         :host([opened]) {
@@ -83,6 +85,17 @@ class PlDropdown extends PlElement {
         :popover-open {
             inset: unset;
             border:inherit;
+            box-shadow: 0px 4px 16px 0px rgba(34, 60, 80, 0.2);
+            border-radius: var(--pl-border-radius);
+            padding: var(--pl-space-sm);
+            border: 1px solid var(--pl-grey-light);
+            animation-name: fade, slide;
+            animation-duration: 200ms, 400ms;
+            animation-fill-mode: forwards;
+            animation-timing-function: linear, cubic-bezier(0.23, 1, 0.32, 1);
+            animation-delay: 200ms, 0;
+            visibility:visible;
+
         }
 
         @keyframes fade {
